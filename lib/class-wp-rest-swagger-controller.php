@@ -248,9 +248,16 @@ class WP_REST_Swagger_Controller extends WP_REST_Controller {
 						if(!empty($pdetails['type'])){
 							if($pdetails['type']=='array'){
 								$parameter['type']=$pdetails['type'];
-								$parameter['items']=array('type'=>'string');
+								$parameter['items']=array(
+									'type'=> $pdetails['items']['type'],
+									'properties'=> $pdetails['items']['properties']
+								);
 							}elseif($pdetails['type']=='object'){
-								$parameter['type']='string';
+								$parameter['type']=$pdetails['type'];
+								$parameter['items']=array(
+									'type'=> $pdetails['items']['type'],
+									'properties'=> $pdetails['items']['properties']
+								);
 							
 							}elseif($pdetails['type']=='date-time'){
 								$parameter['type']='string';
@@ -344,7 +351,10 @@ class WP_REST_Swagger_Controller extends WP_REST_Controller {
 
 			
 			if($prop['type']=='array'){
-				$prop['items']=array('type'=>'string');
+				$prop['items'] = array(
+					'type'=> $prop['items']['type'],
+					'properties'=> $prop['items']['properties']
+				);
 			}else			
 			if($prop['type']=='date-time'){
 				$prop['type']='string';
