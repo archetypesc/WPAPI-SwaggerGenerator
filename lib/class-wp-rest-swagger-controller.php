@@ -247,18 +247,20 @@ class WP_REST_Swagger_Controller extends WP_REST_Controller {
 						}
 						if(!empty($pdetails['type'])){
 							if($pdetails['type']=='array'){
-								$parameter['type']=$pdetails['type'];
-								$parameter['items']=array(
-									'type'=> $pdetails['items']['type'],
-									'properties'=> $pdetails['items']['properties']
-								);
+								if($pdetails['items']) {
+									$parameter['items']=$pdetails['items'];
+								} else {
+									$parameter['items']=array('type'=>'string');
+								}
 							}elseif($pdetails['type']=='object'){
 								$parameter['type']=$pdetails['type'];
-								$parameter['items']=array(
-									'type'=> $pdetails['items']['type'],
-									'properties'=> $pdetails['items']['properties']
-								);
-							
+								if($pdetails['items']) {
+									$parameter['items']=$pdetails['items'];
+								}else if ($pdetails['properties']) {
+									$parameter['properties']=$pdetails['properties']['rendered'];
+								}else {
+									$parameter['items']=array('type'=>'string');
+								}
 							}elseif($pdetails['type']=='date-time'){
 								$parameter['type']='string';
 								$parameter['format']='date-time';
@@ -350,11 +352,8 @@ class WP_REST_Swagger_Controller extends WP_REST_Controller {
 //--
 
 			
-			if($prop['type']=='array'){
-				$prop['items'] = array(
-					'type'=> $prop['items']['type'],
-					'properties'=> $prop['items']['properties']
-				);
+			if($prop['type']=='array' && !$prop['items']){
+				$prop['items']=array('type'=>'string');
 			}else			
 			if($prop['type']=='date-time'){
 				$prop['type']='string';
